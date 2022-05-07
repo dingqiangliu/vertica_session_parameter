@@ -6,7 +6,7 @@ Vertica User Defined Scalar Functions (UDSF) to set and get user defined session
 
 1. **SetSessionParameter** (name , value)
 
-   ***Parameters:***
+   ***Arguments:***
    
    * name: string. Name of parameter.
    * value: string. Value of parameter.
@@ -16,7 +16,7 @@ Vertica User Defined Scalar Functions (UDSF) to set and get user defined session
 
 2. **GetSessionParameter** (name)
 
-   ***Parameters:***
+   ***Arguments:***
 
    * name: string. Name of parameter.
    
