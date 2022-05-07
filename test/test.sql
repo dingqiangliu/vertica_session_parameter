@@ -72,6 +72,17 @@ select error_on_check_false(
         , 'get non-empty parameter value should return same', 'Case: get non-empty parameter value', ''
     ) as "Case: get non-empty parameter value";
 
+
+select SetSessionParameter('case_non_empty_parameter_value_after_NULL_set', 'non-empty parameter value');
+
+show session udparameter all;
+
+select SetSessionParameter('case_non_empty_parameter_value_after_NULL_set', null);
+select error_on_check_false(
+        GetSessionParameter('case_non_empty_parameter_value_after_NULL_set') is null 
+        , 'get non-empty parameter value after NULL set should return NULL', 'Case: get non-empty parameter value after NULL set', ''
+    ) as "Case: get non-empty parameter value after NULL set";
+
 show session udparameter all;
 
 
