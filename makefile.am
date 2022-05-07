@@ -1,0 +1,39 @@
+
+AUTOMAKE_OPTIONS = foreign
+ACLOCAL_AMFLAGS = -I m4
+
+AM_CXXFLAGS = -I$(SDK)/include
+
+lib_LTLIBRARIES = sessionparameter.la
+sessionparameter_la_SOURCES = src/Vertica.cpp src/SetSessionParameter.cpp src/GetSessionParameter.cpp
+sessionparameter_la_LDFLAGS = -module -avoid-version -shared -fPIC 
+
+
+uninstall4vertica: ddl/uninstall.sql
+	$(VSQL) -ef ddl/uninstall.sql | tee uninstall4vertica
+	[ -f install2vertica ] && rm -f install2vertica || true
+
+
+install2vertica: $(lib_LTLIBRARIES) ddl/install.sql
+	$(VSQL) -ef ddl/uninstall.sql
+	$(VSQL) -ef ddl/install.sql | tee install2vertica
+	[ -f uninstall4vertica ] && rm -f uninstall4vertica || true
+
+
+uninstall: uninstall4vertica
+
+
+install: install2vertica
+
+
+clean-local:
+	[ -f install2vertica ] && rm -f install2vertica || true
+	[ -f uninstall4vertica ] && rm -f uninstall4vertica || true
+	[ -f testresult.txt ] && rm -f testresult.txt || true
+
+
+# run tests
+test: install2vertica test/test.sql
+	$(VSQL) -ef test/test.sql 2>&1 | tee testresult.txt
+	[ -f testresult.txt ] && ! grep -Hnw ERROR testresult.txt
+
